@@ -10,14 +10,33 @@ import { ProductService } from 'src/app/services/product.service';
 export class HomeComponent implements OnInit {
 
   products: ProductModel[] = [];
+  page = 1;
+  productLimit = 10;
 
   constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
-    this.productService.getProducts().subscribe((products) => {
+    this.getProducts();
+  }
+
+  getProducts(): void {
+    this.productService.getProducts(this.page, this.productLimit).subscribe((products) => {
       this.products = products;
       console.log(this.products);
     });
+  }
+
+  incrementPage(): void {
+    this.page++;
+    this.getProducts();
+  }
+
+  decrementPage(): void {
+    this.page--;
+    if (this.page < 1) {
+      this.page = 1;
+    }
+    this.getProducts();
   }
 
 }

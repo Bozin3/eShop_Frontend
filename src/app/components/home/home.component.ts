@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CartCacheModel } from 'src/app/models/cart-cache-model';
 import { ProductModel } from 'src/app/models/product-model';
+import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
@@ -13,7 +15,8 @@ export class HomeComponent implements OnInit {
   page = 1;
   productLimit = 10;
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService,
+              private cartService: CartService) { }
 
   ngOnInit(): void {
     this.getProducts();
@@ -24,6 +27,10 @@ export class HomeComponent implements OnInit {
       this.products = products;
       console.log(this.products);
     });
+  }
+
+  saveCartProduct(product: ProductModel): void {
+    this.cartService.saveCartCache(product);
   }
 
   incrementPage(): void {

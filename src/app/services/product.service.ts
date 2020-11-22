@@ -16,4 +16,8 @@ export class ProductService {
     return this.httpClient.get<ProductModel[]>(`${environment.API_URL}/products/?page=${page}&limit=${limit}`);
   }
 
+  getProduct(id: number): Promise<ProductModel> {
+    return this.httpClient.get<ProductModel>(`${environment.API_URL}/products/${id}`).toPromise();
+  }
+
 }

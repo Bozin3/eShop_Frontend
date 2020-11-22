@@ -66,24 +66,26 @@
                 <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style="cursor: pointer;">
                   <i class="fa fa-shopping-cart"></i>
                   <span>Your Cart</span>
-                  <div class="qty"> 0 </div>
+                  <div class="qty"> {{cartProducts.length}} </div>
                 </a>
                 <div class="cart-dropdown" >
                   <div class="cart-list">
-                    <div class="product-widget">
+                    <div class="product-widget" *ngFor="let p of cartProducts">
                       <div class="product-img">
-                        <img src="" alt="" width="20px">
+                        <img src="{{p.product.image}}" alt="" width="20px">
                       </div>
                       <div class="product-body">
-                        <h3 class="product-name"><a href="#">Product name</a></h3>
-                        <h4 class="product-price"><span class="qty"> x </span>{{150 | currency:'USD'}}</h4>
+                        <h3 class="product-name"><a href="#">{{p.product.title}}</a></h3>
+                        <h4 class="product-price"><span class="qty"> x{{p.numInCart}} </span>{{p.product.price| currency:'USD'}}</h4>
+                        <button class="btn" (click)="incrementCartProduct(p.product)"><i class="fa fa-plus-circle"></i></button>
+                        <button class="btn" (click)="decrementCartProduct(p.product)"><i class="fa fa-minus-circle"></i></button>
                       </div>
-                      <button class="delete"><i class="fa fa-close"></i></button>
+                      <button class="delete" (click)="deleteCartProduct(p.product)"><i class="fa fa-close"></i></button>
                     </div>
                   </div>
                   <div class="cart-summary">
-                    <small>0 Item(s) selected</small>
-                    <h5>TOTAL : {{0 | currency:'USD'}}</h5>
+                    <small>{{cartProducts.length}} Item(s) selected</small>
+                    <h5>TOTAL : {{cartTotal | currency:'USD'}}</h5>
                   </div>
                   <div class="cart-btns">
                     <a routerLink="/cart">View Cart</a>
@@ -121,7 +123,7 @@
       <div id="responsive-nav">
         <!-- NAV -->
         <ul class="main-nav nav py-3">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="/">Home</a></li>
           <li><a href="#">Categories</a></li>
           <li><a href="#">Games</a></li>
           <li><a href="#">Contact Us</a></li>

@@ -40,6 +40,12 @@ export class CartService {
   }
 
   public saveCartCache(product: ProductModel): void {
+
+    const productIndex = this.cartCache.data.findIndex((p) => p.prodId === product.id);
+    if (productIndex !== -1) { // if already exists
+      return;
+    }
+
     // Refresh product price
     this.productsService.getProduct(product.id).then((res: ProductModel) => {
       this.cartCache.data.push(new CartCacheModel(1, product.id));
@@ -92,8 +98,8 @@ export class CartService {
   deleteCartProduct(product: ProductModel): void {
     const productIndex = this.cartCache.data.findIndex((p) => p.prodId === product.id);
     if (productIndex !== -1) {
-      this.cartCache.data.splice(productIndex);
-      this.cartData.data.splice(productIndex);
+      this.cartCache.data.splice(productIndex, 1);
+      this.cartData.data.splice(productIndex, 1);
       this.saveCartCacheInLocalStorage();
       this.cartDataSubject.next({...this.cartData}); // sending a copy of the object
     }

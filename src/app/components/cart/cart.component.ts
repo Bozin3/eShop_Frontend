@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CartData } from 'src/app/models/cart-data';
 import { CartDataModel } from 'src/app/models/cart_data_model';
+import { OrderRequestModel } from 'src/app/models/order-request-model';
 import { ProductModel } from 'src/app/models/product-model';
 import { CartService } from 'src/app/services/cart.service';
+import { OrderService } from 'src/app/services/order.service';
 
 @Component({
   selector: 'app-cart',
@@ -23,8 +26,6 @@ export class CartComponent implements OnInit {
   getCartData(): void {
     this.cartService.cartDataSubject.subscribe((cartData: CartData) => {
       if (cartData != null) {
-        console.log('cart data:');
-        console.log(cartData.data);
         this.cartProducts = cartData.data;
         this.cartTotal = this.cartService.calculateCartTotal();
       }

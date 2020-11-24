@@ -5,7 +5,10 @@ import { CartCacheModel } from '../models/cart-cache-model';
 import { CartData } from '../models/cart-data';
 import { CartDataModel } from '../models/cart_data_model';
 import { ProductModel } from '../models/product-model';
+import { OrderService } from './order.service';
 import { ProductService } from './product.service';
+import { OrderRequestModel } from '../models/order-request-model';
+import { OrderDetailsRequestModel } from '../models/order-request-details-model';
 
 const CART_ITEM_KEY = 'cart';
 
@@ -77,13 +80,13 @@ export class CartService {
     if (this.cartCache != null && this.cartCache.data.length > 0) {
       const productIndex = this.cartCache.data.findIndex((p) => p.prodId === product.id);
       if (productIndex !== -1) {
-        const incrementedCount = this.cartCache.data[productIndex].numInCart - 1;
-        if (incrementedCount < 1) { // removing the product if cart quantity is less then 1
-          this.cartCache.data.splice(productIndex);
-          this.cartData.data.splice(productIndex);
+        const decrementedCount = this.cartCache.data[productIndex].numInCart - 1;
+        if (decrementedCount < 1) { // removing the product if cart quantity is less then 1
+          this.cartCache.data.splice(productIndex, 1);
+          this.cartData.data.splice(productIndex, 1);
         } else {
-          this.cartCache.data[productIndex].numInCart = incrementedCount;
-          this.cartData.data[productIndex].numInCart = incrementedCount;
+          this.cartCache.data[productIndex].numInCart = decrementedCount;
+          this.cartData.data[productIndex].numInCart = decrementedCount;
         }
         this.saveCartCacheInLocalStorage();
         this.cartDataSubject.next({...this.cartData}); // sending a copy of the object
@@ -113,8 +116,27 @@ export class CartService {
     return total;
   }
 
-  private resetCartData(): void {
-    this.cartCache = new CartCache();
-    this.cartData = new CartData();
+  createOrder(): OrderRequestModel {
+
+    const order = new OrderRequestModel();
+    order.userId = 1;
+
+    for (const cartItem of this.cartData.data) {
+      const orderDetail: OrderDetailsRequestModel = {
+        productId: cartItem.product.id,
+        quantity: cartItem.numInCart,
+        price: cartItem.product.price
+      };
+      order.ordersDetails.push(orderDetail);
+    }
+
+    return order;
+  }
+
+  resetCartData(): void {
+    localStorage.removeItem(CART_ITEM_KEY);
+    this.cartCache.data = [];
+    this.cartData.data = [];
+    this.cartDataSubject.next({...this.cartData}); // sending a copy of the object
   }
 }

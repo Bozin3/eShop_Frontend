@@ -42,17 +42,26 @@ export class CartService {
     }
   }
 
-  public saveCartCache(product: ProductModel): void {
+  public addToCart(product: ProductModel, quantity: number = 1): void {
 
     const productIndex = this.cartCache.data.findIndex((p) => p.prodId === product.id);
     if (productIndex !== -1) { // if already exists
+      const prodQuantity = this.cartData.data[productIndex].product.quantity;
+      if (quantity > prodQuantity) {
+        // TODO: display a toast message
+        quantity = prodQuantity;
+      }
+      this.cartCache.data[productIndex].numInCart = quantity;
+      this.cartData.data[productIndex].numInCart = quantity;
+      this.saveCartCacheInLocalStorage();
+      this.cartDataSubject.next({...this.cartData}); // sending a copy of the object
       return;
     }
 
     // Refresh product price
     this.productsService.getProduct(product.id).then((res: ProductModel) => {
-      this.cartCache.data.push(new CartCacheModel(1, product.id));
-      this.cartData.data.push(new CartDataModel(1, product));
+      this.cartCache.data.push(new CartCacheModel(quantity, product.id));
+      this.cartData.data.push(new CartDataModel(quantity, product));
       this.saveCartCacheInLocalStorage();
       this.cartDataSubject.next({...this.cartData}); // sending a copy of the object
     });

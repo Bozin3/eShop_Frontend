@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CartCacheModel } from 'src/app/models/cart-cache-model';
 import { ProductModel } from 'src/app/models/product-model';
 import { CartService } from 'src/app/services/cart.service';
@@ -16,10 +17,15 @@ export class HomeComponent implements OnInit {
   productLimit = 10;
 
   constructor(private productService: ProductService,
-              private cartService: CartService) { }
+              private cartService: CartService,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.getProducts();
+  }
+
+  selectProduct(id: number): void {
+    this.router.navigate(['/product/' + id]);
   }
 
   getProducts(): void {
@@ -30,7 +36,7 @@ export class HomeComponent implements OnInit {
   }
 
   saveCartProduct(product: ProductModel): void {
-    this.cartService.saveCartCache(product);
+    this.cartService.addToCart(product);
   }
 
   incrementPage(): void {
@@ -45,5 +51,4 @@ export class HomeComponent implements OnInit {
     }
     this.getProducts();
   }
-
 }

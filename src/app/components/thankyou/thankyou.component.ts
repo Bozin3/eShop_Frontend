@@ -11,8 +11,9 @@ import { OrderService } from 'src/app/services/order.service';
 })
 export class ThankyouComponent implements OnInit {
 
-  orderResponseId: number;
+  private orderResponseId: number;
   orderResponseModel: OrderResponseModel;
+  orderTotalValue = 0;
 
   constructor(private router: Router, private orderService: OrderService) {
     const currentState = this.router.getCurrentNavigation();
@@ -28,9 +29,17 @@ export class ThankyouComponent implements OnInit {
     this.orderService.getOrder(this.orderResponseId)
     .then((orderModel: OrderResponseModel) => {
       this.orderResponseModel = orderModel;
-      console.log(orderModel);
+      this.calculateTotal();
     })
     .catch((err) => console.log(err));
+  }
+
+  private calculateTotal(): void {
+    let total = 0;
+    for (const productDetail of this.orderResponseModel.ordersDetails) {
+      total = total + (productDetail.quantity * productDetail.price);
+    }
+    this.orderTotalValue = total;
   }
 
 }

@@ -1,0 +1,91 @@
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="section-title">
+                    <h3 class="title">Registration</h3>
+                </div>
+
+                <!--Registration form-->
+                <form class="registration-form" [formGroup]="formsGroup" (ngSubmit)="register()">
+
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="first-name" placeholder="First Name"
+                            formControlName="fname"
+                            [ngClass]="{'is-invalid': formsGroup.get('fname').errors && formsGroup.get('fname').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('fname').errors && formsGroup.get('fname').touched">
+                            Please enter your first name.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="last-name" placeholder="Last Name"
+                            formControlName="lname"
+                            [ngClass]="{'is-invalid': formsGroup.get('lname').errors && formsGroup.get('lname').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('lname').errors && formsGroup.get('lname').touched">
+                            Please enter your last name.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" name="age" placeholder="18" min="18"
+                            formControlName="age"
+                            [ngClass]="{'is-invalid': formsGroup.get('age').errors && formsGroup.get('age').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('age').errors && formsGroup.get('age').touched">
+                            Minimum allowed age is 18.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="email" name="email" placeholder="Email"
+                            formControlName="email"
+                            [ngClass]="{'is-invalid': formsGroup.get('email').errors && formsGroup.get('email').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('email').hasError('required') && formsGroup.get('email').touched">
+                            Please enter your email address.
+                        </div>
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('email').hasError('pattern') && formsGroup.get('email').touched">
+                            Please provide a valid email address.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="password" name="password" placeholder="Password"
+                            formControlName="password"
+                            [ngClass]="{'is-invalid': formsGroup.get('password').errors && formsGroup.get('password').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('password').hasError('required') && formsGroup.get('password').touched">
+                            Please enter your password.
+                        </div>
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('password').hasError('minlength') && formsGroup.get('password').touched">
+                            Password must be minimum 6 characters
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="password" name="confirm-password"
+                            placeholder="Confirm Password" formControlName="confirmPassword"
+                            [ngClass]="{'is-invalid': formsGroup.get('confirmPassword').errors && formsGroup.get('confirmPassword').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('confirmPassword').errors && formsGroup.get('confirmPassword').touched">
+                            Please confirm your password.
+                        </div>
+                    </div>
+
+                    <div class="d-flex mt-5 w-100 justify-content-between">
+                        <a routerLink="/login" class="btn btn-danger btn-md order-0">Cancel</a>
+                        <button class="btn btn-success btn-md order-0" type="submit">Create Account</button>
+                    </div>
+                </form>
+                <!--Registration form-->
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->

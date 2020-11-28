@@ -11,7 +11,7 @@
                 </div>
 
                 <!--Registration form-->
-                <form class="registration-form" [formGroup]="formsGroup" (ngSubmit)="register()">
+                <form [formGroup]="formsGroup" (ngSubmit)="register()">
 
                     <div class="form-group">
                         <input class="form-control" type="text" name="first-name" placeholder="First Name"

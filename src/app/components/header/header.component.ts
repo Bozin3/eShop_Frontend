@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartData } from 'src/app/models/cart-data';
 import { CartDataModel } from 'src/app/models/cart_data_model';
 import { ProductModel } from 'src/app/models/product-model';
+import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 
 @Component({
@@ -14,10 +15,15 @@ export class HeaderComponent implements OnInit {
   cartProducts: CartDataModel[] = [];
   cartTotal = 0;
 
-  constructor(private cartService: CartService) { }
+  loggedIn: boolean;
+
+  constructor(private cartService: CartService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.getCartData();
+    this.authService.loggedIn.subscribe((loggedIn) => {
+      this.loggedIn = loggedIn;
+    });
   }
 
   getCartData(): void {
@@ -39,6 +45,10 @@ export class HeaderComponent implements OnInit {
 
   deleteCartProduct(product: ProductModel): void {
     this.cartService.deleteCartProduct(product);
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
 }

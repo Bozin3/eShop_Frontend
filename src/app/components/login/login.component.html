@@ -1,1 +1,47 @@
-<p>login works!</p>
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12 login-form-1">
+                <h3>Login</h3>
+                <form [formGroup]="formsGroup" (ngSubmit)="login()">
+                    <div class="form-group">
+                        <input class="form-control" type="email" name="email" placeholder="Email"
+                            formControlName="email"
+                            [ngClass]="{'is-invalid': formsGroup.get('email').errors && formsGroup.get('email').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('email').hasError('required') && formsGroup.get('email').touched">
+                            Please enter your email address.
+                        </div>
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('email').hasError('pattern') && formsGroup.get('email').touched">
+                            Please provide a valid email address.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="password" name="password" placeholder="Password"
+                            formControlName="password"
+                            [ngClass]="{'is-invalid': formsGroup.get('password').errors && formsGroup.get('password').touched}">
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('password').hasError('required') && formsGroup.get('password').touched">
+                            Please enter your password.
+                        </div>
+                        <div class="invalid-feedback"
+                            *ngIf="formsGroup.get('password').hasError('minlength') && formsGroup.get('password').touched">
+                            Password must be minimum 6 characters
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btnSubmit" value="Login" />
+                    </div>
+                    <div class="form-group">
+                       Don't have an account? <a routerLink="/register" class="register">Sign up!</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->

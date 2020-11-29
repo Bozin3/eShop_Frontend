@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CartCacheModel } from 'src/app/models/cart-cache-model';
+import { ToastrService } from 'ngx-toastr';
 import { ProductModel } from 'src/app/models/product-model';
 import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -18,7 +18,8 @@ export class HomeComponent implements OnInit {
 
   constructor(private productService: ProductService,
               private cartService: CartService,
-              private router: Router) { }
+              private router: Router,
+              private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.getProducts();
@@ -37,6 +38,12 @@ export class HomeComponent implements OnInit {
 
   saveCartProduct(product: ProductModel): void {
     this.cartService.addToCart(product);
+    this.toast.success(`${product.title} added to the cart.`, 'Product Added', {
+      timeOut: 1000,
+      progressBar: false,
+      progressAnimation: 'increasing',
+      positionClass: 'toast-top-right'
+    });
   }
 
   incrementPage(): void {

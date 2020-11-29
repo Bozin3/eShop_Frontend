@@ -14,6 +14,8 @@ import { ProductService } from './services/product.service';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,10 @@ import { RegisterComponent } from './components/register/register.component';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     ProductService

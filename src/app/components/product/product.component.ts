@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ProductModel } from 'src/app/models/product-model';
 import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -20,7 +21,7 @@ export class ProductComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -59,7 +60,12 @@ export class ProductComponent implements OnInit {
     const insertedQuantity = this.quantity.nativeElement.value;
     if (insertedQuantity > 0) {
       this.cartService.addToCart(this.product, +insertedQuantity);
-      this.router.navigate(['/']);
+      this.toast.success(`${this.product.title} added to the cart.`, 'Product Added', {
+        timeOut: 1000,
+        progressBar: false,
+        progressAnimation: 'increasing',
+        positionClass: 'toast-top-right'
+      });
     }
   }
 

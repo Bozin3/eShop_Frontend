@@ -9,6 +9,7 @@ import { OrderService } from './order.service';
 import { ProductService } from './product.service';
 import { OrderRequestModel } from '../models/order-request-model';
 import { OrderDetailsRequestModel } from '../models/order-request-details-model';
+import { AuthService } from './auth.service';
 
 const CART_ITEM_KEY = 'cart';
 
@@ -24,7 +25,7 @@ export class CartService {
 
   cartDataSubject = new BehaviorSubject(null);
 
-  constructor(private productsService: ProductService) {
+  constructor(private productsService: ProductService, private authService: AuthService) {
     this.getCartData();
   }
 
@@ -48,7 +49,6 @@ export class CartService {
     if (productIndex !== -1) { // if already exists
       const prodQuantity = this.cartData.data[productIndex].product.quantity;
       if (quantity > prodQuantity) {
-        // TODO: display a toast message
         quantity = prodQuantity;
       }
       this.cartCache.data[productIndex].numInCart = quantity;
@@ -107,14 +107,17 @@ export class CartService {
     localStorage.setItem(CART_ITEM_KEY, JSON.stringify(this.cartCache));
   }
 
-  deleteCartProduct(product: ProductModel): void {
+  deleteCartProduct(product: ProductModel): boolean {
     const productIndex = this.cartCache.data.findIndex((p) => p.prodId === product.id);
     if (productIndex !== -1) {
       this.cartCache.data.splice(productIndex, 1);
       this.cartData.data.splice(productIndex, 1);
       this.saveCartCacheInLocalStorage();
       this.cartDataSubject.next({...this.cartData}); // sending a copy of the object
+      return true;
     }
+
+    return false;
   }
 
   calculateCartTotal(): number {
@@ -128,8 +131,12 @@ export class CartService {
   createOrder(): OrderRequestModel {
 
     const order = new OrderRequestModel();
-    order.userId = 1;
+    const loggedUser = this.authService.getLoggedInUser();
+    if (loggedUser == null) {
+      return;
+    }
 
+    order.userId = loggedUser.id;
     for (const cartItem of this.cartData.data) {
       const orderDetail: OrderDetailsRequestModel = {
         productId: cartItem.product.id,

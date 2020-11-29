@@ -7,6 +7,8 @@ import { LoginResponse } from '../models/login-response';
 import { RegisterResponse } from '../models/register-response';
 import { RegistrationModel } from '../models/registration-model';
 import {map} from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { LoggedUser } from '../models/logged-user';
 
 const TOKEN_KEY = 'token';
 
@@ -15,12 +17,11 @@ const TOKEN_KEY = 'token';
 })
 export class AuthService {
 
-  loggedIn: BehaviorSubject<boolean>;
+  private jwtTokenHelper = new JwtHelperService();
+  loggedUser: BehaviorSubject<LoggedUser>;
 
   constructor(private httpClient: HttpClient) {
-    const token = localStorage.getItem(TOKEN_KEY);
-    // TODO: Check if token expired
-    this.loggedIn = new BehaviorSubject(token !== null);
+    this.loggedUser = new BehaviorSubject(this.getLoggedInUser());
    }
 
   registerUser(user: RegistrationModel): Observable<RegisterResponse> {
@@ -33,15 +34,27 @@ export class AuthService {
       map((response: LoginResponse) => {
         if ( response != null && response.success) {
           localStorage.setItem(TOKEN_KEY, response.token);
-          this.loggedIn.next(true);
+          this.loggedUser.next(this.getLoggedInUser());
         }
         return response;
       })
     );
   }
 
+  getLoggedInUser(): LoggedUser {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token != null) {
+      const isExpired = this.jwtTokenHelper.isTokenExpired(token);
+      if (!isExpired) {
+        const decodedToken = this.jwtTokenHelper.decodeToken(token);
+        return { id: decodedToken.nameid, email: decodedToken.unique_name, token} as LoggedUser;
+      }
+    }
+    return null;
+  }
+
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
-    this.loggedIn.next(false);
+    this.loggedUser.next(null);
   }
 }

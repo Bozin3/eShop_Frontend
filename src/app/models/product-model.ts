@@ -7,4 +7,5 @@ export class ProductModel {
     price = 0;
     quantity = 0;
     shortDesc = '';
+    catId: number;
 }

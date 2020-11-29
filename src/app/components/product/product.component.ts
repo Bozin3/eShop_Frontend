@@ -13,6 +13,7 @@ import { ProductService } from 'src/app/services/product.service';
 export class ProductComponent implements OnInit {
 
   product: ProductModel;
+  similarProducts: ProductModel[] = [];
   thumbImages: string[] = [];
 
   @ViewChild('quantity') quantity;
@@ -32,10 +33,18 @@ export class ProductComponent implements OnInit {
         if (product.images != null && product.images !== '') {
           this.thumbImages = product.images.split(';');
         }
+        this.getSimilarProducts(this.product.catId);
         console.log(this.product);
         console.log(this.thumbImages);
       }).catch((err) => console.log(err));
     }
+  }
+
+  getSimilarProducts(categoryId: number): void {
+    this.productService.getProductsByCategory(categoryId, 1, 4).subscribe((products) => {
+      this.similarProducts = products;
+      console.log(products);
+    });
   }
 
   increment(): void {
@@ -56,11 +65,11 @@ export class ProductComponent implements OnInit {
     this.quantity.nativeElement.value = currentQuantity;
   }
 
-  addToCart(): void {
+  addToCart(product: ProductModel): void {
     const insertedQuantity = this.quantity.nativeElement.value;
     if (insertedQuantity > 0) {
-      this.cartService.addToCart(this.product, +insertedQuantity);
-      this.toast.success(`${this.product.title} added to the cart.`, 'Product Added', {
+      this.cartService.addToCart(product, +insertedQuantity);
+      this.toast.success(`${product.title} added to the cart.`, 'Product Added', {
         timeOut: 1000,
         progressBar: false,
         progressAnimation: 'increasing',
